@@ -31,4 +31,24 @@ Genom att fortsätta bekräftar du att:
 • Du samtycker till användning av dessa funktioner
 • Du har rätt att aktivera funktionerna på denna enhet</string>
 
+
+    <string name="main_subtitle">Enable features below. Changes require device lock.</string>
+
+    <string name="feature_sms_location">SMS location request</string>
+    <string name="feature_sms_location_desc">Reply with location when a whitelisted number sends “LOC”.</string>
+
+    <string name="feature_battery">Battery alert</string>
+    <string name="feature_battery_desc">Send an SMS when battery level drops below a threshold.</string>
+
+    <string name="feature_panic">Emergency alert (PANIC)</string>
+    <string name="feature_panic_desc">Play loud sound + vibration even in silent mode (when enabled).</string>
+
+    <string name="feature_geofence">Safe zones (geofence)</string>
+    <string name="feature_geofence_desc">Send an SMS when entering/leaving selected zones.</string>
+
+    <string name="btn_whitelist">Whitelisted numbers</string>
+    <string name="btn_events">Events</string>
+
+    <string name="main_status_placeholder">Status:\n• No events yet</string>
+
 </resources>
