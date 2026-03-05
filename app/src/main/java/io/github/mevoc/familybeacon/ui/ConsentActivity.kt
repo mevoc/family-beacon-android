@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.CheckBox
 import androidx.appcompat.app.AppCompatActivity
 import io.github.mevoc.familybeacon.R
+import io.github.mevoc.familybeacon.util.Prefs
 
 class ConsentActivity : AppCompatActivity() {
 

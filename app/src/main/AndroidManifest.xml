@@ -2,7 +2,27 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- SMS -->
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+
+    <!-- Location -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- Foreground services (panic + ev location) -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- Android 10+ om du kör location i foreground service senare -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+
+    <!-- Panic -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
+    <!-- Biometric prompt -->
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+
+    <!-- Background location later when adding geofence -->
 
     <application
         android:allowBackup="true"
@@ -30,6 +50,28 @@
         <activity
             android:name=".ui.EventsActivity"
             android:exported="false" />
+
+        <!-- SMS receiver -->
+        <receiver
+            android:name=".receiver.SmsReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Panic foreground service -->
+        <service
+            android:name=".service.PanicService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
+
+        <!-- (För senare) Location foreground service -->
+        <service
+            android:name=".service.LocationFgService"
+            android:exported="false"
+            android:foregroundServiceType="location" />
+
     </application>
 
 </manifest>

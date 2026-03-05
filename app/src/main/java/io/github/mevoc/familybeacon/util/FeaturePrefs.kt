@@ -1,4 +1,4 @@
-package io.github.mevoc.familybeacon.ui
+package io.github.mevoc.familybeacon.util
 
 import android.content.Context
 

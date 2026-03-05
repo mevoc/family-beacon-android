@@ -8,6 +8,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import io.github.mevoc.familybeacon.R
 import io.github.mevoc.familybeacon.data.EventLogger
+import io.github.mevoc.familybeacon.geofence.GeofenceHelper
+import io.github.mevoc.familybeacon.service.PanicService
+import io.github.mevoc.familybeacon.util.FeaturePrefs
+import io.github.mevoc.familybeacon.util.Prefs
 
 class MainActivity : AppCompatActivity() {
 
@@ -95,7 +99,6 @@ class MainActivity : AppCompatActivity() {
 
             auth.verifyUser {
                 setState(desiredState)
-                EventLogger.info(this, "TOGGLE", "${toggle.text} -> $desiredState")
                 toggle.post {
                     toggle.setOnCheckedChangeListener(null)
                     toggle.isChecked = desiredState
@@ -103,6 +106,13 @@ class MainActivity : AppCompatActivity() {
                     // Rewire properly after setting
                     wireToggle(toggle, getState, setState)
                 }
+                EventLogger.info(this, "TOGGLE", "${toggle.text} -> $desiredState")
+                if (toggle.id == R.id.switchGeofence) {
+                    if (desiredState) GeofenceHelper.enable(this) else GeofenceHelper.disable(this)
+                }
+                //if (toggle.id == R.id.switchPanic) {
+                //    if (desiredState) PanicService.enable(this) else PanicService.disable(this)
+                //}
             }
 
             // If auth fails/cancelled, restore wiring
