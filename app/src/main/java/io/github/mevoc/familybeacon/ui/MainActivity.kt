@@ -7,6 +7,7 @@ import android.widget.Switch
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import io.github.mevoc.familybeacon.R
+import io.github.mevoc.familybeacon.data.EventLogger
 
 class MainActivity : AppCompatActivity() {
 
@@ -45,6 +46,8 @@ class MainActivity : AppCompatActivity() {
         swPanic.isChecked = prefs.panicEnabled
         swGeofence.isChecked = prefs.geofenceEnabled
 
+        EventLogger.info(this, "APP", "Main screen opened")
+
         // Wire toggles with auth
         wireToggle(swSms,
             getState = { prefs.smsLocationEnabled },
@@ -72,8 +75,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnEvents.setOnClickListener {
-            // Placeholder for now; we’ll implement EventActivity with Room next
-            textStatus.text = "Status:\n• Events screen not implemented yet"
+            startActivity(Intent(this, EventsActivity::class.java))
         }
     }
 
@@ -93,6 +95,7 @@ class MainActivity : AppCompatActivity() {
 
             auth.verifyUser {
                 setState(desiredState)
+                EventLogger.info(this, "TOGGLE", "${toggle.text} -> $desiredState")
                 toggle.post {
                     toggle.setOnCheckedChangeListener(null)
                     toggle.isChecked = desiredState

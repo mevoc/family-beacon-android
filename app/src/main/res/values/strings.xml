@@ -51,4 +51,10 @@ Genom att fortsätta bekräftar du att:
 
     <string name="main_status_placeholder">Status:\n• No events yet</string>
 
+
+    <string name="events_title">Events</string>
+    <string name="events_clear">Clear events</string>
+    <string name="events_loading">Loading…</string>
+    <string name="events_empty">No events yet.</string>
+
 </resources>
