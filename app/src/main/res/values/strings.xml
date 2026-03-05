@@ -1,3 +1,34 @@
 <resources>
     <string name="app_name">Family Beacon</string>
+
+    <string name="consent_title">Samtycke &amp; information</string>
+    <string name="consent_checkbox">Jag har läst och förstått informationen ovan</string>
+    <string name="consent_accept">Jag godkänner och fortsätter</string>
+    <string name="consent_decline">Avbryt</string>
+
+    <string name="consent_text">Den här appen är avsedd för familjebruk och nödsituationer.
+
+När funktioner aktiveras kan appen:
+• Dela telefonens position via SMS
+• Skicka batterivarningar
+• Spela en hög nödsignal vid akut behov
+• Skicka meddelanden när säkra zoner lämnas eller nås
+
+VIKTIGT:
+• All funktionalitet måste aktiveras manuellt
+• Endast godkända nummer kan ta emot information
+• Ingen information skickas till servrar eller molntjänster
+• All data stannar lokalt på telefonen eller skickas via SMS
+
+ETIK &amp; SAMTYCKE:
+• Den här appen är inte avsedd för dold övervakning
+• Användaren av telefonen ska vara medveten om vad som delas
+• Funktioner kan när som helst stängas av
+• Appen kan alltid avinstalleras
+
+Genom att fortsätta bekräftar du att:
+• Du förstår vad appen gör
+• Du samtycker till användning av dessa funktioner
+• Du har rätt att aktivera funktionerna på denna enhet</string>
+
 </resources>
