@@ -5,18 +5,25 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.Switch
 import android.widget.TextView
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import io.github.mevoc.familybeacon.R
 import io.github.mevoc.familybeacon.data.EventLogger
 import io.github.mevoc.familybeacon.geofence.GeofenceHelper
 import io.github.mevoc.familybeacon.service.PanicService
+import io.github.mevoc.familybeacon.util.AuthHelper
 import io.github.mevoc.familybeacon.util.FeaturePrefs
+import io.github.mevoc.familybeacon.util.PermissionUtil
 import io.github.mevoc.familybeacon.util.Prefs
+
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var auth: AuthHelper
     private lateinit var prefs: FeaturePrefs
+
+    private var pendingToggleId: Int? = null
+    private var pendingDesiredState: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,13 +81,66 @@ class MainActivity : AppCompatActivity() {
         )
 
         btnWhitelist.setOnClickListener {
-            // Placeholder for now
-            textStatus.text = "Status:\n• Whitelist screen not implemented yet"
+            startActivity(Intent(this, WhitelistActivity::class.java))
         }
 
         btnEvents.setOnClickListener {
             startActivity(Intent(this, EventsActivity::class.java))
         }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        val toggleId = pendingToggleId ?: return
+        val desiredState = pendingDesiredState
+        pendingToggleId = null
+
+        val granted = grantResults.isNotEmpty() && grantResults.all { it == android.content.pm.PackageManager.PERMISSION_GRANTED }
+        val toggle = findViewById<Switch>(toggleId)
+
+        if (granted) {
+            // Apply state and log
+            when (toggleId) {
+                R.id.switchSmsLocation -> {
+                    prefs.smsLocationEnabled = desiredState
+                    EventLogger.info(this, "PERMISSION", "Granted SMS+Location for LOC feature")
+                }
+                R.id.switchGeofence -> {
+                    prefs.geofenceEnabled = desiredState
+                    if (desiredState) GeofenceHelper.enable(this) else GeofenceHelper.disable(this)
+                    EventLogger.info(this, "PERMISSION", "Granted Location for Geofence")
+                }
+            }
+            toggle.isChecked = desiredState
+        } else {
+            // Permission denied → keep OFF
+            when (toggleId) {
+                R.id.switchSmsLocation -> prefs.smsLocationEnabled = false
+                R.id.switchGeofence -> prefs.geofenceEnabled = false
+            }
+            toggle.isChecked = false
+            EventLogger.warn(this, "PERMISSION", "Denied permissions for toggleId=$toggleId")
+        }
+    }
+
+    private fun applyFeatureToggle(toggle: Switch, desiredState: Boolean, setState: (Boolean) -> Unit) {
+        setState(desiredState)
+
+        // Side effects / module hooks (stubs ok)
+        when (toggle.id) {
+            R.id.switchGeofence -> {
+                if (desiredState) GeofenceHelper.enable(this) else GeofenceHelper.disable(this)
+            }
+            // SMS receiver behöver ingen start; OS triggar den
+            // Battery/Panic kopplas senare när modulerna är riktiga
+        }
+
+        EventLogger.info(this, "TOGGLE", "${toggle.text} -> $desiredState")
     }
 
     private fun wireToggle(
@@ -98,26 +158,33 @@ class MainActivity : AppCompatActivity() {
             toggle.setOnCheckedChangeListener { _, _ -> } // block re-entrancy
 
             auth.verifyUser {
-                setState(desiredState)
-                toggle.post {
-                    toggle.setOnCheckedChangeListener(null)
-                    toggle.isChecked = desiredState
-                    toggle.setOnCheckedChangeListener { _, _ -> } // keep stable
-                    // Rewire properly after setting
-                    wireToggle(toggle, getState, setState)
+                // Auth OK → permissions gate
+                val result: Pair<Array<String>, Int> = when (toggle.id) {
+                    R.id.switchSmsLocation -> PermissionUtil.PERMS_SMS_LOC to PermissionUtil.REQ_SMS_LOC
+                    R.id.switchGeofence -> PermissionUtil.PERMS_GEOFENCE to PermissionUtil.REQ_GEOFENCE
+                    R.id.switchBattery -> PermissionUtil.PERMS_BATTERY to PermissionUtil.REQ_BATTERY
+                    R.id.switchPanic -> PermissionUtil.PERMS_PANIC to PermissionUtil.REQ_PANIC
+                    else -> emptyArray<String>() to 0
                 }
-                EventLogger.info(this, "TOGGLE", "${toggle.text} -> $desiredState")
-                if (toggle.id == R.id.switchGeofence) {
-                    if (desiredState) GeofenceHelper.enable(this) else GeofenceHelper.disable(this)
-                }
-                //if (toggle.id == R.id.switchPanic) {
-                //    if (desiredState) PanicService.enable(this) else PanicService.disable(this)
-                //}
-            }
+                val (perms, reqCode) = result
 
-            // If auth fails/cancelled, restore wiring
-            toggle.post {
-                wireToggle(toggle, getState, setState)
+                if (perms.isEmpty() || PermissionUtil.hasAll(this, perms)) {
+                    // Permissions OK → apply state + side effects
+                    applyFeatureToggle(toggle, desiredState, setState)
+                    // update UI
+                    toggle.post {
+                        toggle.setOnCheckedChangeListener(null)
+                        toggle.isChecked = desiredState
+                        wireToggle(toggle, getState, setState)
+                    }
+                } else {
+                    // Need permissions
+                    pendingToggleId = toggle.id
+                    pendingDesiredState = desiredState
+                    PermissionUtil.request(this, perms, reqCode)
+                    // UI stays OFF until result
+                    toggle.post { wireToggle(toggle, getState, setState) }
+                }
             }
         }
     }

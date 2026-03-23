@@ -57,4 +57,14 @@ Genom att fortsätta bekräftar du att:
     <string name="events_loading">Loading…</string>
     <string name="events_empty">No events yet.</string>
 
+
+    <string name="whitelist_title">Whitelisted numbers</string>
+    <string name="whitelist_desc">Only these numbers can request location via SMS commands (e.g. “LOC”).</string>
+    <string name="whitelist_hint">Enter phone number (e.g. +4670…)</string>
+    <string name="whitelist_add">Add</string>
+    <string name="whitelist_remove">Remove</string>
+    <string name="whitelist_clear">Clear all</string>
+    <string name="whitelist_current">Current whitelist</string>
+    <string name="whitelist_empty">No numbers added.</string>
+
 </resources>

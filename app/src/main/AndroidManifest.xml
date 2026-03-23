@@ -50,6 +50,9 @@
         <activity
             android:name=".ui.EventsActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.WhitelistActivity"
+            android:exported="false" />
 
         <!-- SMS receiver -->
         <receiver
