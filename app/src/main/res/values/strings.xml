@@ -1,41 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Family Beacon</string>
 
-    <string name="consent_title">Samtycke &amp; information</string>
-    <string name="consent_checkbox">Jag har läst och förstått informationen ovan</string>
-    <string name="consent_accept">Jag godkänner och fortsätter</string>
-    <string name="consent_decline">Avbryt</string>
+    <string name="consent_title">Consent &amp; information</string>
+    <string name="consent_checkbox">I have read and understood the information above</string>
+    <string name="consent_accept">I agree and continue</string>
+    <string name="consent_decline">Cancel</string>
 
-    <string name="consent_text">Den här appen är avsedd för familjebruk och nödsituationer.
-
-När funktioner aktiveras kan appen:
-• Dela telefonens position via SMS
-• Skicka batterivarningar
-• Spela en hög nödsignal vid akut behov
-• Skicka meddelanden när säkra zoner lämnas eller nås
-
-VIKTIGT:
-• All funktionalitet måste aktiveras manuellt
-• Endast godkända nummer kan ta emot information
-• Ingen information skickas till servrar eller molntjänster
-• All data stannar lokalt på telefonen eller skickas via SMS
-
-ETIK &amp; SAMTYCKE:
-• Den här appen är inte avsedd för dold övervakning
-• Användaren av telefonen ska vara medveten om vad som delas
-• Funktioner kan när som helst stängas av
-• Appen kan alltid avinstalleras
-
-Genom att fortsätta bekräftar du att:
-• Du förstår vad appen gör
-• Du samtycker till användning av dessa funktioner
-• Du har rätt att aktivera funktionerna på denna enhet</string>
-
+    <string name="consent_text">This app is intended for family use and emergency situations.\n\nWhen features are enabled, the app may:\n• Share the phone\'s location via SMS\n• Send battery level alerts\n• Play a loud emergency alarm when needed\n• Send messages when safe zones are entered or exited\n\nIMPORTANT:\n• All features must be enabled manually\n• Only approved numbers can receive information\n• No information is sent to servers or cloud services\n• All data stays local on the device or is sent via SMS\n\nETHICS &amp; CONSENT:\n• This app is not intended for covert surveillance\n• The phone\'s user should be aware of what is shared\n• Features can be turned off at any time\n• The app can always be uninstalled\n\nBy continuing you confirm that:\n• You understand what the app does\n• You consent to the use of these features\n• You have the right to enable these features on this device</string>
 
     <string name="main_subtitle">Enable features below. Changes require device lock.</string>
 
     <string name="feature_sms_location">SMS location request</string>
-    <string name="feature_sms_location_desc">Reply with location when a whitelisted number sends “LOC”.</string>
+    <string name="feature_sms_location_desc">Reply with location when a whitelisted number sends \"LOC\".</string>
 
     <string name="feature_battery">Battery alert</string>
     <string name="feature_battery_desc">Send an SMS when battery level drops below a threshold.</string>
@@ -51,20 +28,17 @@ Genom att fortsätta bekräftar du att:
 
     <string name="main_status_placeholder">Status:\n• No events yet</string>
 
-
     <string name="events_title">Events</string>
     <string name="events_clear">Clear events</string>
     <string name="events_loading">Loading…</string>
     <string name="events_empty">No events yet.</string>
 
-
     <string name="whitelist_title">Whitelisted numbers</string>
-    <string name="whitelist_desc">Only these numbers can request location via SMS commands (e.g. “LOC”).</string>
+    <string name="whitelist_desc">Only these numbers can request location via SMS commands (e.g. \"LOC\").</string>
     <string name="whitelist_hint">Enter phone number (e.g. +4670…)</string>
     <string name="whitelist_add">Add</string>
     <string name="whitelist_remove">Remove</string>
     <string name="whitelist_clear">Clear all</string>
     <string name="whitelist_current">Current whitelist</string>
     <string name="whitelist_empty">No numbers added.</string>
-
 </resources>
