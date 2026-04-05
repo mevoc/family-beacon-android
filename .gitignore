@@ -14,6 +14,7 @@ captures/
 .cxx/
 *.aab
 *.apk
+*.dm
 output-metadata.json
 
 # IntelliJ
@@ -30,6 +31,7 @@ keystore_b64.txt
 
 # Google Services (e.g. APIs or Firebase)
 google-services.json
+google_maps_api.xml
 
 # Android Profiling
 *.hprof

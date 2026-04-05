@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Family Beacon</string>
+
+    <string name="consent_title">Samtycke &amp; information</string>
+    <string name="consent_checkbox">Jag har läst och förstått informationen ovan</string>
+    <string name="consent_accept">Jag godkänner och fortsätter</string>
+    <string name="consent_decline">Avbryt</string>
+
+    <string name="consent_text">Den här appen är avsedd för familjebruk och nödsituationer.\n\nNär funktioner aktiveras kan appen:\n• Dela telefonens position via SMS\n• Skicka batterivarningar\n• Spela en hög nödsignal vid akut behov\n• Skicka meddelanden när säkra zoner lämnas eller nås\n\nVIKTIGT:\n• All funktionalitet måste aktiveras manuellt\n• Endast godkända nummer kan ta emot information\n• Ingen information skickas till servrar eller molntjänster\n• All data stannar lokalt på telefonen eller skickas via SMS\n\nETIK &amp; SAMTYCKE:\n• Den här appen är inte avsedd för dold övervakning\n• Användaren av telefonen ska vara medveten om vad som delas\n• Funktioner kan när som helst stängas av\n• Appen kan alltid avinstalleras\n\nGenom att fortsätta bekräftar du att:\n• Du förstår vad appen gör\n• Du samtycker till användning av dessa funktioner\n• Du har rätt att aktivera funktionerna på denna enhet</string>
+
+    <string name="main_subtitle">Aktivera funktioner nedan. Ändringar kräver enhetslås.</string>
+
+    <string name="feature_sms_location">SMS-positionsförfrågan</string>
+    <string name="feature_sms_location_desc">Svarar med position när ett godkänt nummer skickar \"POS\".</string>
+
+    <string name="feature_battery">Batterivarning</string>
+    <string name="feature_battery_desc">Skickar ett SMS när batterinivån sjunker under ett tröskelvärde.</string>
+    <string name="feature_battery_threshold">Larma under</string>
+
+    <string name="feature_panic">Nödlarm (PANIC)</string>
+    <string name="feature_panic_desc">Spelar ett högt ljud + vibration även i tyst läge (när aktiverat).</string>
+
+    <string name="feature_geofence">Säkra zoner (geofence)</string>
+    <string name="feature_geofence_desc">Skickar ett SMS när en zon lämnas eller nås.</string>
+
+    <string name="btn_whitelist">Godkända nummer</string>
+    <string name="btn_safe_zones">Säkra zoner</string>
+    <string name="btn_events">Händelser</string>
+    <string name="btn_panic_stop">Stoppa nödlarm</string>
+
+    <string name="safe_zones_title">Säkra zoner</string>
+    <string name="safe_zones_desc">Zoner som utlöser SMS-larm när enheten passerar in eller ut. Kräver att geofence-funktionen är aktiverad.</string>
+    <string name="safe_zone_name_hint">Zonnamn (t.ex. Hemma)</string>
+    <string name="safe_zone_lat_hint">Latitud</string>
+    <string name="safe_zone_lng_hint">Longitud</string>
+    <string name="safe_zone_radius_hint">Radie</string>
+    <string name="safe_zone_radius_unit">m</string>
+    <string name="safe_zone_alert_enter">Larm vid inträde</string>
+    <string name="safe_zone_alert_exit">Larm vid utträde</string>
+    <string name="safe_zone_add">Lägg till zon</string>
+    <string name="safe_zone_current_pos">Använd aktuell position</string>
+    <string name="safe_zone_pick_map">Välj på karta</string>
+    <string name="safe_zone_empty">Inga säkra zoner konfigurerade.</string>
+    <string name="safe_zone_list_title">Konfigurerade zoner</string>
+    <string name="safe_zone_remove">Ta bort</string>
+    <string name="map_picker_hint">Tryck på kartan för att välja en plats</string>
+    <string name="map_picker_confirm">Bekräfta</string>
+    <string name="map_picker_cancel">Avbryt</string>
+
+
+    <string name="events_title">Händelser</string>
+    <string name="events_clear">Rensa händelser</string>
+    <string name="events_loading">Laddar…</string>
+    <string name="events_empty">Inga händelser än.</string>
+
+    <string name="whitelist_title">Betrodda kontakter</string>
+    <string name="whitelist_desc">Endast dessa kontakter kan skicka kommandon eller ta emot larm. Använd kryssrutorna för att styra vad varje kontakt får göra.</string>
+    <string name="whitelist_name_hint">Namn (t.ex. Mamma)</string>
+    <string name="whitelist_hint">Telefonnummer (t.ex. +4670…)</string>
+    <string name="whitelist_permissions_label">Behörigheter för ny kontakt</string>
+    <string name="whitelist_perm_position">Position</string>
+    <string name="whitelist_perm_battery">Batteri</string>
+    <string name="whitelist_perm_panic">Nödlarm</string>
+    <string name="whitelist_perm_geofence">Säkra zoner</string>
+    <string name="whitelist_add">Lägg till kontakt</string>
+    <string name="whitelist_remove">Ta bort</string>
+    <string name="whitelist_clear">Rensa alla</string>
+    <string name="whitelist_current">Kontakter</string>
+    <string name="whitelist_empty">Inga kontakter tillagda.</string>
+</resources>

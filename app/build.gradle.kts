@@ -17,6 +17,17 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Maps API key: read from local.properties (local dev) or GOOGLE_MAPS_KEY env var (CI/release).
+        // Falls back to empty string so builds succeed without a key (map picker won't function).
+        val localProps = java.util.Properties().also { props ->
+            rootProject.file("local.properties").takeIf { it.exists() }
+                ?.inputStream()?.use { props.load(it) }
+        }
+        manifestPlaceholders["googleMapsKey"] =
+            localProps.getProperty("GOOGLE_MAPS_KEY")
+                ?: System.getenv("GOOGLE_MAPS_KEY")
+                ?: ""
     }
 
     signingConfigs {
