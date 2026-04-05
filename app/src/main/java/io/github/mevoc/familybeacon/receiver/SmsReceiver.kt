@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.provider.Telephony
 import io.github.mevoc.familybeacon.data.EventLogger
+import io.github.mevoc.familybeacon.service.PanicService
 import io.github.mevoc.familybeacon.util.FeaturePrefs
 import io.github.mevoc.familybeacon.util.LocationUtil
 import io.github.mevoc.familybeacon.util.SmsUtil
@@ -16,7 +17,7 @@ class SmsReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val prefs = FeaturePrefs(context)
-        if (!prefs.smsLocationEnabled) return
+        if (!prefs.smsLocationEnabled && !prefs.panicEnabled) return
 
         val msgs = Telephony.Sms.Intents.getMessagesFromIntent(intent)
         if (msgs.isEmpty()) return
@@ -30,7 +31,12 @@ class SmsReceiver : BroadcastReceiver() {
         }
 
         when (body.uppercase(Locale.ROOT)) {
-            "LOC" -> handleLoc(context, from)
+            "LOC" -> if (prefs.smsLocationEnabled) handleLoc(context, from)
+                     else EventLogger.warn(context, "SMS", "LOC ignored — feature disabled")
+            "PANIC" -> if (prefs.panicEnabled) handlePanic(context, from)
+                       else EventLogger.warn(context, "SMS", "PANIC ignored — feature disabled")
+            "PANIC STOP" -> if (prefs.panicEnabled) handlePanicStop(context, from)
+                            else EventLogger.warn(context, "SMS", "PANIC STOP ignored — feature disabled")
             else -> EventLogger.info(context, "SMS", "Ignored command '$body' from $from")
         }
     }
@@ -62,5 +68,15 @@ class SmsReceiver : BroadcastReceiver() {
                 EventLogger.error(context, "SMS", "LOC failed: $reason")
             }
         )
+    }
+
+    private fun handlePanic(context: Context, from: String) {
+        EventLogger.warn(context, "PANIC", "PANIC triggered by $from")
+        context.startService(Intent(context, PanicService::class.java))
+    }
+
+    private fun handlePanicStop(context: Context, from: String) {
+        EventLogger.info(context, "PANIC", "PANIC STOP triggered by $from")
+        context.stopService(Intent(context, PanicService::class.java))
     }
 }

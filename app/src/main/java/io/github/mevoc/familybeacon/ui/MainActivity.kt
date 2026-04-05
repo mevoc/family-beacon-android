@@ -1,6 +1,7 @@
 package io.github.mevoc.familybeacon.ui
 
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Switch
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import io.github.mevoc.familybeacon.R
 import io.github.mevoc.familybeacon.data.EventLogger
 import io.github.mevoc.familybeacon.geofence.GeofenceHelper
+import io.github.mevoc.familybeacon.receiver.BatteryReceiver
 import io.github.mevoc.familybeacon.service.PanicService
 import io.github.mevoc.familybeacon.util.AuthHelper
 import io.github.mevoc.familybeacon.util.FeaturePrefs
@@ -24,6 +26,8 @@ class MainActivity : AppCompatActivity() {
 
     private var pendingToggleId: Int? = null
     private var pendingDesiredState: Boolean = false
+
+    private var batteryReceiver: BatteryReceiver? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +60,12 @@ class MainActivity : AppCompatActivity() {
         swBattery.isChecked = prefs.batteryAlertEnabled
         swPanic.isChecked = prefs.panicEnabled
         swGeofence.isChecked = prefs.geofenceEnabled
+
+        // Re-register battery receiver if feature was already enabled
+        if (prefs.batteryAlertEnabled) {
+            batteryReceiver = BatteryReceiver()
+            registerReceiver(batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+        }
 
         EventLogger.info(this, "APP", "Main screen opened")
 
@@ -128,16 +138,36 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        batteryReceiver?.let { unregisterReceiver(it) }
+        batteryReceiver = null
+    }
+
     private fun applyFeatureToggle(toggle: Switch, desiredState: Boolean, setState: (Boolean) -> Unit) {
         setState(desiredState)
 
-        // Side effects / module hooks (stubs ok)
         when (toggle.id) {
             R.id.switchGeofence -> {
                 if (desiredState) GeofenceHelper.enable(this) else GeofenceHelper.disable(this)
             }
-            // SMS receiver behöver ingen start; OS triggar den
-            // Battery/Panic kopplas senare när modulerna är riktiga
+            R.id.switchBattery -> {
+                if (desiredState) {
+                    if (batteryReceiver == null) {
+                        batteryReceiver = BatteryReceiver()
+                        registerReceiver(batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+                    }
+                } else {
+                    batteryReceiver?.let { unregisterReceiver(it) }
+                    batteryReceiver = null
+                }
+            }
+            R.id.switchPanic -> {
+                if (!desiredState) {
+                    stopService(Intent(this, PanicService::class.java))
+                }
+            }
+            // SMS receiver is triggered by OS, no explicit start needed
         }
 
         EventLogger.info(this, "TOGGLE", "${toggle.text} -> $desiredState")
