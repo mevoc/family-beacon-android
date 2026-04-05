@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
@@ -20,7 +22,7 @@ android {
 
         // Maps API key: read from local.properties (local dev) or GOOGLE_MAPS_KEY env var (CI/release).
         // Falls back to empty string so builds succeed without a key (map picker won't function).
-        val localProps = java.util.Properties().also { props ->
+        val localProps = Properties().also { props ->
             rootProject.file("local.properties").takeIf { it.exists() }
                 ?.inputStream()?.use { props.load(it) }
         }
@@ -53,8 +55,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
+    kotlin {
+        compilerOptions {
+            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
+        }
     }
     buildFeatures {
         compose = true
