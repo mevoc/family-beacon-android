@@ -6,6 +6,7 @@ import android.content.Intent
 import android.provider.Telephony
 import io.github.mevoc.familybeacon.data.EventLogger
 import io.github.mevoc.familybeacon.service.PanicService
+import io.github.mevoc.familybeacon.util.ContactStore
 import io.github.mevoc.familybeacon.util.FeaturePrefs
 import io.github.mevoc.familybeacon.util.LocationUtil
 import io.github.mevoc.familybeacon.util.SmsUtil
@@ -25,24 +26,35 @@ class SmsReceiver : BroadcastReceiver() {
         val from = msgs.first().originatingAddress ?: return
         val body = msgs.joinToString("") { it.messageBody ?: "" }.trim()
 
-        if (!prefs.isWhitelisted(from)) {
+        val store = ContactStore(context)
+        val contact = store.findByNumber(from)
+        if (contact == null) {
             EventLogger.warn(context, "SMS", "Rejected SMS from non-whitelisted: $from")
             return
         }
 
         when (body.uppercase(Locale.ROOT)) {
-            "POS" -> if (prefs.smsLocationEnabled) handleLoc(context, from)
-                     else EventLogger.warn(context, "SMS", "POS ignored — feature disabled")
-            "PANIC" -> if (prefs.panicEnabled) handlePanic(context, from)
-                       else EventLogger.warn(context, "SMS", "PANIC ignored — feature disabled")
-            "PANIC STOP" -> if (prefs.panicEnabled) handlePanicStop(context, from)
-                            else EventLogger.warn(context, "SMS", "PANIC STOP ignored — feature disabled")
-            else -> EventLogger.info(context, "SMS", "Ignored command '$body' from $from")
+            "POS" -> when {
+                !prefs.smsLocationEnabled -> EventLogger.warn(context, "SMS", "POS ignored — feature disabled")
+                !contact.canRequestPosition -> EventLogger.warn(context, "SMS", "POS denied for ${contact.name} ($from)")
+                else -> handleLoc(context, from, contact.name)
+            }
+            "PANIC" -> when {
+                !prefs.panicEnabled -> EventLogger.warn(context, "SMS", "PANIC ignored — feature disabled")
+                !contact.canRequestPanic -> EventLogger.warn(context, "SMS", "PANIC denied for ${contact.name} ($from)")
+                else -> handlePanic(context, from, contact.name)
+            }
+            "PANIC STOP" -> when {
+                !prefs.panicEnabled -> EventLogger.warn(context, "SMS", "PANIC STOP ignored — feature disabled")
+                !contact.canRequestPanic -> EventLogger.warn(context, "SMS", "PANIC STOP denied for ${contact.name} ($from)")
+                else -> handlePanicStop(context, from, contact.name)
+            }
+            else -> EventLogger.info(context, "SMS", "Ignored command '$body' from ${contact.name} ($from)")
         }
     }
 
-    private fun handleLoc(context: Context, replyTo: String) {
-        EventLogger.info(context, "SMS", "POS requested by $replyTo")
+    private fun handleLoc(context: Context, replyTo: String, name: String) {
+        EventLogger.info(context, "SMS", "POS requested by $name ($replyTo)")
 
         LocationUtil.requestBestEffortLocation(
             context = context,
@@ -61,22 +73,22 @@ class SmsReceiver : BroadcastReceiver() {
                 }
 
                 SmsUtil.send(replyTo, msg)
-                EventLogger.info(context, "SMS", "Replied POS to $replyTo ($source, $accTxt)")
+                EventLogger.info(context, "SMS", "Replied POS to $name ($source, $accTxt)")
             },
             onFailure = { reason ->
                 SmsUtil.send(replyTo, "⚠️ Could not get location ($reason).")
-                EventLogger.error(context, "SMS", "POS failed: $reason")
+                EventLogger.error(context, "SMS", "POS failed for $name: $reason")
             }
         )
     }
 
-    private fun handlePanic(context: Context, from: String) {
-        EventLogger.warn(context, "PANIC", "PANIC triggered by $from")
+    private fun handlePanic(context: Context, from: String, name: String) {
+        EventLogger.warn(context, "PANIC", "PANIC triggered by $name ($from)")
         context.startService(Intent(context, PanicService::class.java))
     }
 
-    private fun handlePanicStop(context: Context, from: String) {
-        EventLogger.info(context, "PANIC", "PANIC STOP triggered by $from")
+    private fun handlePanicStop(context: Context, from: String, name: String) {
+        EventLogger.info(context, "PANIC", "PANIC STOP triggered by $name ($from)")
         context.stopService(Intent(context, PanicService::class.java))
     }
 }

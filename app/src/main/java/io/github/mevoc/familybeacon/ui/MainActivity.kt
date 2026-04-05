@@ -3,7 +3,10 @@ package io.github.mevoc.familybeacon.ui
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Switch
 import android.widget.TextView
 import android.content.pm.PackageManager
@@ -28,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     private var pendingDesiredState: Boolean = false
 
     private var batteryReceiver: BatteryReceiver? = null
+    private lateinit var editBatteryThreshold: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +64,19 @@ class MainActivity : AppCompatActivity() {
         swBattery.isChecked = prefs.batteryAlertEnabled
         swPanic.isChecked = prefs.panicEnabled
         swGeofence.isChecked = prefs.geofenceEnabled
+
+        // Battery threshold input
+        editBatteryThreshold = findViewById(R.id.editBatteryThreshold)
+        editBatteryThreshold.setText(prefs.batteryAlertThreshold.toString())
+        editBatteryThreshold.isEnabled = prefs.batteryAlertEnabled
+        editBatteryThreshold.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+            override fun afterTextChanged(s: Editable?) {
+                val v = s?.toString()?.toIntOrNull() ?: return
+                if (v in 1..99) prefs.batteryAlertThreshold = v
+            }
+        })
 
         // Re-register battery receiver if feature was already enabled
         if (prefs.batteryAlertEnabled) {
@@ -152,6 +169,7 @@ class MainActivity : AppCompatActivity() {
                 if (desiredState) GeofenceHelper.enable(this) else GeofenceHelper.disable(this)
             }
             R.id.switchBattery -> {
+                editBatteryThreshold.isEnabled = desiredState
                 if (desiredState) {
                     if (batteryReceiver == null) {
                         batteryReceiver = BatteryReceiver()

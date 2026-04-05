@@ -52,6 +52,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
+        <LinearLayout
+            android:id="@+id/batteryThresholdRow"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="@string/feature_battery_threshold"
+                android:textSize="13sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <EditText
+                android:id="@+id/editBatteryThreshold"
+                android:inputType="number"
+                android:maxLength="2"
+                android:layout_marginStart="8dp"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textAlignment="center"/>
+
+            <TextView
+                android:text="%"
+                android:textSize="13sp"
+                android:layout_marginStart="2dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
         <!-- Panic -->
         <Switch
             android:id="@+id/switchPanic"
