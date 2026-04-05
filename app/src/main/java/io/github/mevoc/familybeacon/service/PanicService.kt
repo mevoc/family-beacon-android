@@ -30,6 +30,7 @@ class PanicService : Service() {
     private var flashHandler: Handler? = null
     private var torchCameraId: String? = null
     private var torchOn = false
+    private val autoStopHandler = Handler(Looper.getMainLooper())
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         createNotificationChannel()
@@ -37,12 +38,14 @@ class PanicService : Service() {
         startAlarm()
         startVibration()
         startFlash()
-        EventLogger.warn(this, "PANIC", "PanicService started — alarm active")
+        autoStopHandler.postDelayed({ stopSelf() }, AUTO_STOP_MS)
+        EventLogger.warn(this, "PANIC", "PanicService started — alarm active (auto-stop in ${AUTO_STOP_MS / 1000}s)")
         return START_STICKY
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        autoStopHandler.removeCallbacksAndMessages(null)
         mediaPlayer?.stop()
         mediaPlayer?.release()
         mediaPlayer = null
@@ -163,5 +166,6 @@ class PanicService : Service() {
         private const val NOTIF_ID = 911
         private const val CHANNEL_ID = "panic_channel"
         private const val FLASH_INTERVAL_MS = 300L
+        private const val AUTO_STOP_MS = 30_000L
     }
 }
