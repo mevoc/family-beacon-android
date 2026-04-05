@@ -109,6 +109,10 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, WhitelistActivity::class.java))
         }
 
+        findViewById<Button>(R.id.btnSafeZones).setOnClickListener {
+            startActivity(Intent(this, SafeZonesActivity::class.java))
+        }
+
         btnEvents.setOnClickListener {
             startActivity(Intent(this, EventsActivity::class.java))
         }

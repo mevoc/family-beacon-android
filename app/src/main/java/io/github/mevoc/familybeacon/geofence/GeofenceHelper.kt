@@ -10,60 +10,62 @@ import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
 import io.github.mevoc.familybeacon.data.EventLogger
 import io.github.mevoc.familybeacon.receiver.GeofenceReceiver
-import io.github.mevoc.familybeacon.util.FeaturePrefs
-import io.github.mevoc.familybeacon.util.LocationUtil
+import io.github.mevoc.familybeacon.util.SafeZoneStore
 
 object GeofenceHelper {
 
-    private const val FENCE_ID = "HOME_ZONE"
-    private const val RADIUS_METERS = 200f
-
     @SuppressLint("MissingPermission")
     fun enable(context: Context) {
-        LocationUtil.requestBestEffortLocation(
-            context = context,
-            onResult = { lat, lon, _, _, source ->
-                val prefs = FeaturePrefs(context)
-                prefs.geofenceLat = lat.toFloat()
-                prefs.geofenceLng = lon.toFloat()
+        val zones = SafeZoneStore(context).getAll()
+        if (zones.isEmpty()) {
+            EventLogger.warn(context, "GEOFENCE", "No safe zones configured — nothing to register")
+            return
+        }
 
-                val geofence = Geofence.Builder()
-                    .setRequestId(FENCE_ID)
-                    .setCircularRegion(lat, lon, RADIUS_METERS)
-                    .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                    .setTransitionTypes(
-                        Geofence.GEOFENCE_TRANSITION_EXIT or Geofence.GEOFENCE_TRANSITION_ENTER
-                    )
-                    .build()
-
-                val request = GeofencingRequest.Builder()
-                    .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
-                    .addGeofence(geofence)
-                    .build()
-
-                LocationServices.getGeofencingClient(context)
-                    .addGeofences(request, buildPendingIntent(context))
-                    .addOnSuccessListener {
-                        EventLogger.info(context, "GEOFENCE", "Geofence registered at $lat,$lon (src: $source, r: ${RADIUS_METERS}m)")
-                    }
-                    .addOnFailureListener { e ->
-                        EventLogger.error(context, "GEOFENCE", "Failed to register geofence: ${e.message}")
-                    }
-            },
-            onFailure = { reason ->
-                EventLogger.error(context, "GEOFENCE", "Could not get location to set geofence: $reason")
+        val geofences = zones.mapNotNull { zone ->
+            val transition = when {
+                zone.alertOnEnter && zone.alertOnExit ->
+                    Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT
+                zone.alertOnEnter -> Geofence.GEOFENCE_TRANSITION_ENTER
+                zone.alertOnExit -> Geofence.GEOFENCE_TRANSITION_EXIT
+                else -> return@mapNotNull null
             }
-        )
+            Geofence.Builder()
+                .setRequestId(zone.id)
+                .setCircularRegion(zone.lat, zone.lng, zone.radiusMeters)
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .setTransitionTypes(transition)
+                .build()
+        }
+
+        if (geofences.isEmpty()) {
+            EventLogger.warn(context, "GEOFENCE", "All zones have no transitions enabled")
+            return
+        }
+
+        val request = GeofencingRequest.Builder()
+            .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+            .addGeofences(geofences)
+            .build()
+
+        LocationServices.getGeofencingClient(context)
+            .addGeofences(request, buildPendingIntent(context))
+            .addOnSuccessListener {
+                EventLogger.info(context, "GEOFENCE", "Registered ${geofences.size} zone(s)")
+            }
+            .addOnFailureListener { e ->
+                EventLogger.error(context, "GEOFENCE", "Failed to register zones: ${e.message}")
+            }
     }
 
     fun disable(context: Context) {
         LocationServices.getGeofencingClient(context)
             .removeGeofences(buildPendingIntent(context))
             .addOnSuccessListener {
-                EventLogger.info(context, "GEOFENCE", "Geofence removed")
+                EventLogger.info(context, "GEOFENCE", "All geofences removed")
             }
             .addOnFailureListener { e ->
-                EventLogger.warn(context, "GEOFENCE", "Failed to remove geofence: ${e.message}")
+                EventLogger.warn(context, "GEOFENCE", "Failed to remove geofences: ${e.message}")
             }
     }
 

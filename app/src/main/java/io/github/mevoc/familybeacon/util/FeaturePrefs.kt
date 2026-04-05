@@ -32,16 +32,6 @@ class FeaturePrefs(context: Context) {
         get() = prefs.getInt(KEY_BATTERY_LAST, 100)
         set(v) = prefs.edit().putInt(KEY_BATTERY_LAST, v).apply()
 
-    /** Latitude of the registered geofence centre. */
-    var geofenceLat: Float
-        get() = prefs.getFloat(KEY_GEO_LAT, 0f)
-        set(v) = prefs.edit().putFloat(KEY_GEO_LAT, v).apply()
-
-    /** Longitude of the registered geofence centre. */
-    var geofenceLng: Float
-        get() = prefs.getFloat(KEY_GEO_LNG, 0f)
-        set(v) = prefs.edit().putFloat(KEY_GEO_LNG, v).apply()
-
     companion object {
         private const val FILE = "family_beacon_features"
         private const val KEY_SMS = "sms_location_enabled"
@@ -50,7 +40,5 @@ class FeaturePrefs(context: Context) {
         private const val KEY_BATTERY_LAST = "battery_last_alerted_pct"
         private const val KEY_PANIC = "panic_enabled"
         private const val KEY_GEOFENCE = "geofence_enabled"
-        private const val KEY_GEO_LAT = "geofence_lat"
-        private const val KEY_GEO_LNG = "geofence_lng"
     }
 }

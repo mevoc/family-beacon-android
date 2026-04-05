@@ -25,8 +25,28 @@
     <string name="feature_geofence_desc">Send an SMS when entering/leaving selected zones.</string>
 
     <string name="btn_whitelist">Whitelisted numbers</string>
+    <string name="btn_safe_zones">Safe zones</string>
     <string name="btn_events">Events</string>
     <string name="btn_panic_stop">Stop panic alarm</string>
+
+    <string name="safe_zones_title">Safe zones</string>
+    <string name="safe_zones_desc">Zones that trigger SMS alerts when the device enters or exits. Requires the geofence feature to be enabled.</string>
+    <string name="safe_zone_name_hint">Zone name (e.g. Home)</string>
+    <string name="safe_zone_lat_hint">Latitude</string>
+    <string name="safe_zone_lng_hint">Longitude</string>
+    <string name="safe_zone_radius_hint">Radius</string>
+    <string name="safe_zone_radius_unit">m</string>
+    <string name="safe_zone_alert_enter">Alert on enter</string>
+    <string name="safe_zone_alert_exit">Alert on exit</string>
+    <string name="safe_zone_add">Add zone</string>
+    <string name="safe_zone_current_pos">Use current position</string>
+    <string name="safe_zone_pick_map">Pick on map</string>
+    <string name="safe_zone_empty">No safe zones configured.</string>
+    <string name="safe_zone_list_title">Configured zones</string>
+    <string name="safe_zone_remove">Remove</string>
+    <string name="map_picker_hint">Tap the map to select a location</string>
+    <string name="map_picker_confirm">Confirm</string>
+    <string name="map_picker_cancel">Cancel</string>
 
 
     <string name="events_title">Events</string>

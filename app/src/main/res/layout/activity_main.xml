@@ -121,6 +121,13 @@
             android:layout_height="wrap_content"/>
 
         <Button
+            android:id="@+id/btnSafeZones"
+            android:text="@string/btn_safe_zones"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Button
             android:id="@+id/btnEvents"
             android:text="@string/btn_events"
             android:layout_marginTop="10dp"
