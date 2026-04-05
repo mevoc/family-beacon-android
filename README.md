@@ -37,9 +37,10 @@ See [ETHICS.md](ETHICS.md) and [PRIVACY.md](PRIVACY.md) for details.
 
 Currently distributed as a downloadable APK (outside Google Play).
 
-1. Download the APK from the Releases page
+1. Go to [Releases](https://github.com/mevoc/family-beacon-android/releases/latest)
+2. Download `app-release.apk`
 2. Enable installation from unknown sources (Android setting)
-3. Install and follow the in-app consent flow
+4. Install and follow the in-app consent flow
 
 ## License
 
