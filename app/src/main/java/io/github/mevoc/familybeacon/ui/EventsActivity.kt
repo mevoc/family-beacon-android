@@ -6,6 +6,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import io.github.mevoc.familybeacon.R
 import io.github.mevoc.familybeacon.data.AppDatabase
+import io.github.mevoc.familybeacon.util.AuthHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,15 +19,20 @@ class EventsActivity : AppCompatActivity() {
 
     private lateinit var tv: TextView
     private lateinit var btnClear: Button
+    private lateinit var auth: AuthHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_events)
 
+        auth = AuthHelper(this)
+
         tv = findViewById(R.id.tvEvents)
         btnClear = findViewById(R.id.btnClearEvents)
 
-        btnClear.setOnClickListener { clearEvents() }
+        btnClear.setOnClickListener {
+            auth.verifyUser { clearEvents() }
+        }
 
         loadEvents()
     }

@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity() {
             when (toggleId) {
                 R.id.switchSmsLocation -> {
                     prefs.smsLocationEnabled = desiredState
-                    EventLogger.info(this, "PERMISSION", "Granted SMS+Location for LOC feature")
+                    EventLogger.info(this, "PERMISSION", "Granted SMS+Location for POS feature")
                 }
                 R.id.switchGeofence -> {
                     prefs.geofenceEnabled = desiredState

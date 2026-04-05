@@ -31,8 +31,8 @@ class SmsReceiver : BroadcastReceiver() {
         }
 
         when (body.uppercase(Locale.ROOT)) {
-            "LOC" -> if (prefs.smsLocationEnabled) handleLoc(context, from)
-                     else EventLogger.warn(context, "SMS", "LOC ignored — feature disabled")
+            "POS" -> if (prefs.smsLocationEnabled) handleLoc(context, from)
+                     else EventLogger.warn(context, "SMS", "POS ignored — feature disabled")
             "PANIC" -> if (prefs.panicEnabled) handlePanic(context, from)
                        else EventLogger.warn(context, "SMS", "PANIC ignored — feature disabled")
             "PANIC STOP" -> if (prefs.panicEnabled) handlePanicStop(context, from)
@@ -42,7 +42,7 @@ class SmsReceiver : BroadcastReceiver() {
     }
 
     private fun handleLoc(context: Context, replyTo: String) {
-        EventLogger.info(context, "SMS", "LOC requested by $replyTo")
+        EventLogger.info(context, "SMS", "POS requested by $replyTo")
 
         LocationUtil.requestBestEffortLocation(
             context = context,
@@ -61,11 +61,11 @@ class SmsReceiver : BroadcastReceiver() {
                 }
 
                 SmsUtil.send(replyTo, msg)
-                EventLogger.info(context, "SMS", "Replied LOC to $replyTo ($source, $accTxt)")
+                EventLogger.info(context, "SMS", "Replied POS to $replyTo ($source, $accTxt)")
             },
             onFailure = { reason ->
                 SmsUtil.send(replyTo, "⚠️ Could not get location ($reason).")
-                EventLogger.error(context, "SMS", "LOC failed: $reason")
+                EventLogger.error(context, "SMS", "POS failed: $reason")
             }
         )
     }

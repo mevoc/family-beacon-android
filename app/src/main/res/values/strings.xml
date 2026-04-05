@@ -12,7 +12,7 @@
     <string name="main_subtitle">Enable features below. Changes require device lock.</string>
 
     <string name="feature_sms_location">SMS location request</string>
-    <string name="feature_sms_location_desc">Reply with location when a whitelisted number sends \"LOC\".</string>
+    <string name="feature_sms_location_desc">Reply with location when a whitelisted number sends \"POS\".</string>
 
     <string name="feature_battery">Battery alert</string>
     <string name="feature_battery_desc">Send an SMS when battery level drops below a threshold.</string>
@@ -34,7 +34,7 @@
     <string name="events_empty">No events yet.</string>
 
     <string name="whitelist_title">Whitelisted numbers</string>
-    <string name="whitelist_desc">Only these numbers can request location via SMS commands (e.g. \"LOC\").</string>
+    <string name="whitelist_desc">Only these numbers can request location via SMS commands (e.g. \"POS\").</string>
     <string name="whitelist_hint">Enter phone number (e.g. +4670…)</string>
     <string name="whitelist_add">Add</string>
     <string name="whitelist_remove">Remove</string>

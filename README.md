@@ -14,7 +14,7 @@ The app allows trusted contacts (for example parents) to request status informat
 
 ## Features
 
-- 📍 SMS-based location request (from whitelisted numbers)
+- 📍 SMS-based location request — send `POS` from a whitelisted number to receive the current position
 - 🔋 Battery level alerts
 - 🚨 Emergency alert (audible + vibration)
 - 🗺️ Geofencing (safe zones)
