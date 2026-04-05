@@ -26,8 +26,8 @@
 
     <string name="btn_whitelist">Whitelisted numbers</string>
     <string name="btn_events">Events</string>
+    <string name="btn_panic_stop">Stop panic alarm</string>
 
-    <string name="main_status_placeholder">Status:\n• No events yet</string>
 
     <string name="events_title">Events</string>
     <string name="events_clear">Clear events</string>

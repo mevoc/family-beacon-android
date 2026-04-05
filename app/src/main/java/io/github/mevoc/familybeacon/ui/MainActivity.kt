@@ -8,7 +8,6 @@ import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Switch
-import android.widget.TextView
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import io.github.mevoc.familybeacon.R
@@ -57,7 +56,6 @@ class MainActivity : AppCompatActivity() {
 
         val btnWhitelist = findViewById<Button>(R.id.btnWhitelist)
         val btnEvents = findViewById<Button>(R.id.btnEvents)
-        val textStatus = findViewById<TextView>(R.id.textStatus)
 
         // Initialize switch states (no auth needed for reading)
         swSms.isChecked = prefs.smsLocationEnabled
@@ -113,6 +111,11 @@ class MainActivity : AppCompatActivity() {
 
         btnEvents.setOnClickListener {
             startActivity(Intent(this, EventsActivity::class.java))
+        }
+
+        findViewById<Button>(R.id.btnPanicStop).setOnClickListener {
+            stopService(Intent(this, PanicService::class.java))
+            EventLogger.info(this, "PANIC", "Panic alarm stopped via button")
         }
     }
 

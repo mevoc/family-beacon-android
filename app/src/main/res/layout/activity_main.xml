@@ -127,12 +127,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <!-- Status -->
-        <TextView
-            android:id="@+id/textStatus"
-            android:text="@string/main_status_placeholder"
-            android:layout_marginTop="18dp"
-            android:textSize="14sp"
+        <Button
+            android:id="@+id/btnPanicStop"
+            android:text="@string/btn_panic_stop"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 

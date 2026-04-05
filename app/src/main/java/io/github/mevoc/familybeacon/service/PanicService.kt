@@ -6,12 +6,16 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraManager
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.RingtoneManager
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
@@ -23,12 +27,16 @@ class PanicService : Service() {
 
     private var mediaPlayer: MediaPlayer? = null
     private var vibrator: Vibrator? = null
+    private var flashHandler: Handler? = null
+    private var torchCameraId: String? = null
+    private var torchOn = false
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         createNotificationChannel()
         startForeground(NOTIF_ID, buildNotification())
         startAlarm()
         startVibration()
+        startFlash()
         EventLogger.warn(this, "PANIC", "PanicService started — alarm active")
         return START_STICKY
     }
@@ -39,6 +47,7 @@ class PanicService : Service() {
         mediaPlayer?.release()
         mediaPlayer = null
         vibrator?.cancel()
+        stopFlash()
         EventLogger.info(this, "PANIC", "PanicService stopped")
     }
 
@@ -88,6 +97,47 @@ class PanicService : Service() {
         }
     }
 
+    private fun startFlash() {
+        val cm = getSystemService(Context.CAMERA_SERVICE) as CameraManager
+        torchCameraId = try {
+            cm.cameraIdList.firstOrNull { id ->
+                cm.getCameraCharacteristics(id)
+                    .get(CameraCharacteristics.FLASH_INFO_AVAILABLE) == true
+            }
+        } catch (e: Exception) {
+            EventLogger.warn(this, "PANIC", "No torch available: ${e.message}")
+            null
+        } ?: return
+
+        flashHandler = Handler(Looper.getMainLooper())
+        val blink = object : Runnable {
+            override fun run() {
+                try {
+                    torchOn = !torchOn
+                    cm.setTorchMode(torchCameraId!!, torchOn)
+                } catch (e: Exception) {
+                    // Torch lost (e.g. camera taken by another app) — stop blinking
+                    EventLogger.warn(this@PanicService, "PANIC", "Torch error: ${e.message}")
+                    return
+                }
+                flashHandler?.postDelayed(this, FLASH_INTERVAL_MS)
+            }
+        }
+        flashHandler?.post(blink)
+    }
+
+    private fun stopFlash() {
+        flashHandler?.removeCallbacksAndMessages(null)
+        flashHandler = null
+        torchCameraId?.let { id ->
+            try {
+                (getSystemService(Context.CAMERA_SERVICE) as CameraManager).setTorchMode(id, false)
+            } catch (e: Exception) { /* already off or unavailable */ }
+        }
+        torchCameraId = null
+        torchOn = false
+    }
+
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -112,5 +162,6 @@ class PanicService : Service() {
     companion object {
         private const val NOTIF_ID = 911
         private const val CHANNEL_ID = "panic_channel"
+        private const val FLASH_INTERVAL_MS = 300L
     }
 }
