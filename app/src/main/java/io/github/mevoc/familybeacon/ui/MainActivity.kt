@@ -99,6 +99,10 @@ class MainActivity : AppCompatActivity() {
             permWarning.visibility = android.view.View.GONE
         }
 
+        val hasSms = PermissionUtil.hasAll(this, arrayOf(android.Manifest.permission.RECEIVE_SMS))
+        val hasSendSms = PermissionUtil.hasAll(this, arrayOf(android.Manifest.permission.SEND_SMS))
+        val hasLocation = PermissionUtil.hasAll(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION))
+        EventLogger.info(this, "APP", "Permissions — RECEIVE_SMS:$hasSms SEND_SMS:$hasSendSms LOCATION:$hasLocation")
         EventLogger.info(this, "APP", "Main screen opened")
 
         // Wire toggles with auth
