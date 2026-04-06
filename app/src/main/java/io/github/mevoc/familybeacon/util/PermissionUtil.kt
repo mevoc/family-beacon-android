@@ -31,7 +31,7 @@ object PermissionUtil {
 
     val PERMS_BATTERY = arrayOf<String>()
 
-    val PERMS_PANIC = arrayOf<String>()
+    val PERMS_PANIC = arrayOf(Manifest.permission.RECEIVE_SMS)
 
     // Step 1: fine location only (background must be requested separately on Android 11+)
     val PERMS_GEOFENCE = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)

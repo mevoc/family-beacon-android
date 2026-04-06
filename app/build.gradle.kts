@@ -1,5 +1,14 @@
 import java.util.Properties
 
+fun gitVersionName(): String = try {
+    val proc = ProcessBuilder("git", "describe", "--tags", "--always", "--dirty=-dev")
+        .redirectErrorStream(true)
+        .start()
+    proc.inputStream.bufferedReader().readLine()?.trim()?.ifEmpty { "dev" } ?: "dev"
+} catch (e: Exception) {
+    "dev"
+}
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
@@ -16,7 +25,7 @@ android {
         minSdk = 24
         targetSdk = 35
         versionCode = 1
-        versionName = "1.0"
+        versionName = gitVersionName()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 

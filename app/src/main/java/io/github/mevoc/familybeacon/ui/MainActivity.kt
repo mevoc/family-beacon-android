@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Switch
+import android.widget.TextView
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import io.github.mevoc.familybeacon.R
@@ -81,6 +82,9 @@ class MainActivity : AppCompatActivity() {
             batteryReceiver = BatteryReceiver()
             registerReceiver(batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
         }
+
+        val versionName = packageManager.getPackageInfo(packageName, 0).versionName
+        findViewById<TextView>(R.id.textVersion).text = versionName
 
         EventLogger.info(this, "APP", "Main screen opened")
 

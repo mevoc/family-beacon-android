@@ -28,7 +28,14 @@ class SmsReceiver : BroadcastReceiver() {
 
         val store = ContactStore(context)
         val contact = store.findByNumber(from)
-        if (contact == null) return
+        if (contact == null) {
+            // Only log if it looks like a command attempt, to avoid noise from normal SMS
+            val cmd = body.uppercase(Locale.ROOT)
+            if (cmd == "POS" || cmd.startsWith("PANIC")) {
+                EventLogger.warn(context, "SMS", "Command '$cmd' from unknown number: $from")
+            }
+            return
+        }
 
         when (body.uppercase(Locale.ROOT)) {
             "POS" -> when {
