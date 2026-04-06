@@ -1,12 +1,28 @@
+import java.io.File
 import java.util.Properties
 
-fun gitVersionName(): String = try {
-    val proc = ProcessBuilder("git", "describe", "--tags", "--always", "--dirty=-dev")
-        .redirectErrorStream(true)
-        .start()
-    proc.inputStream.bufferedReader().readLine()?.trim()?.ifEmpty { "dev" } ?: "dev"
-} catch (e: Exception) {
-    "dev"
+fun gitVersionName(): String {
+    val isWindows = System.getProperty("os.name").lowercase().contains("win")
+    val gitExe = if (isWindows) {
+        val localAppData = System.getenv("LOCALAPPDATA") ?: ""
+        val programFiles = System.getenv("ProgramFiles") ?: "C:\\Program Files"
+        listOf(
+            "$programFiles\\Git\\cmd\\git.exe",
+            "$programFiles\\Git\\bin\\git.exe",
+            "$localAppData\\Programs\\Git\\cmd\\git.exe",
+            "git.exe"
+        ).firstOrNull { File(it).exists() } ?: "git.exe"
+    } else "git"
+    return try {
+        val proc = ProcessBuilder(gitExe, "describe", "--tags", "--always", "--dirty=-dev")
+            .redirectErrorStream(true)
+            .start()
+        val output = proc.inputStream.bufferedReader().readText().trim()
+        proc.waitFor()
+        output.ifEmpty { "dev" }
+    } catch (e: Exception) {
+        "dev"
+    }
 }
 
 plugins {
