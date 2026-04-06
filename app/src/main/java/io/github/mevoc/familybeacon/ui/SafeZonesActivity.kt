@@ -32,8 +32,8 @@ class SafeZonesActivity : AppCompatActivity() {
             val lat = result.data?.getDoubleExtra("lat", Double.NaN) ?: return@registerForActivityResult
             val lng = result.data?.getDoubleExtra("lng", Double.NaN) ?: return@registerForActivityResult
             if (!lat.isNaN() && !lng.isNaN()) {
-                editLat.setText("%.6f".format(lat))
-                editLng.setText("%.6f".format(lng))
+                editLat.setText("%.6f".format(java.util.Locale.US,lat))
+                editLng.setText("%.6f".format(java.util.Locale.US,lng))
             }
         }
     }
@@ -58,8 +58,8 @@ class SafeZonesActivity : AppCompatActivity() {
             LocationUtil.requestBestEffortLocation(
                 context = this,
                 onResult = { lat, lon, _, _, _ ->
-                    editLat.setText("%.6f".format(lat))
-                    editLng.setText("%.6f".format(lon))
+                    editLat.setText("%.6f".format(java.util.Locale.US,lat))
+                    editLng.setText("%.6f".format(java.util.Locale.US,lon))
                 },
                 onFailure = { reason ->
                     Toast.makeText(this, "Could not get location: $reason", Toast.LENGTH_SHORT).show()
@@ -128,7 +128,7 @@ class SafeZonesActivity : AppCompatActivity() {
 
         row.findViewById<TextView>(R.id.zoneName).text = zone.name
         row.findViewById<TextView>(R.id.zoneDetails).text =
-            "%.5f, %.5f  •  %dm".format(zone.lat, zone.lng, zone.radiusMeters.toInt())
+            "%.5f, %.5f  •  %dm".format(java.util.Locale.US, zone.lat, zone.lng, zone.radiusMeters.toInt())
 
         val cbEnter = row.findViewById<CheckBox>(R.id.cbEnter)
         val cbExit = row.findViewById<CheckBox>(R.id.cbExit)
