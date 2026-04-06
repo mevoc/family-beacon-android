@@ -34,7 +34,7 @@ class WhitelistActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btnAdd).setOnClickListener {
             val name = editName.text?.toString()?.trim().orEmpty()
-            val number = store.normalize(editNumber.text?.toString().orEmpty())
+            val number = store.clean(editNumber.text?.toString().orEmpty())
             if (number.isEmpty()) {
                 Toast.makeText(this, "Enter a phone number", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
