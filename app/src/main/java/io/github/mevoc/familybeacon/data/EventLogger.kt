@@ -5,7 +5,6 @@ import android.os.Looper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 object EventLogger {
 
@@ -26,11 +25,9 @@ object EventLogger {
             message = message
         )
         val db = AppDatabase.get(context)
-        // If already on a background thread (e.g. goAsync coroutine), write synchronously
         if (Looper.myLooper() != Looper.getMainLooper()) {
-            try {
-                runBlocking { db.logDao().insert(entry) }
-            } catch (_: Exception) {}
+            // Already on a background thread — write synchronously via non-suspend DAO method
+            try { db.logDao().insertSync(entry) } catch (_: Exception) {}
         } else {
             CoroutineScope(Dispatchers.IO).launch {
                 try { db.logDao().insert(entry) } catch (_: Exception) {}

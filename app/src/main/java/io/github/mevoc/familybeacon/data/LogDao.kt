@@ -9,6 +9,9 @@ interface LogDao {
     @Insert
     suspend fun insert(entry: LogEntry)
 
+    @Insert
+    fun insertSync(entry: LogEntry)
+
     @Query("SELECT * FROM events ORDER BY timestamp DESC LIMIT :limit")
     suspend fun latest(limit: Int = 100): List<LogEntry>
 

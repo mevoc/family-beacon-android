@@ -99,6 +99,14 @@ class MainActivity : AppCompatActivity() {
             permWarning.visibility = android.view.View.GONE
         }
 
+        // Request battery optimization exemption so SMS receiver works in background on Samsung etc.
+        val pm = getSystemService(android.os.PowerManager::class.java)
+        if (needsReceiveSms && !pm.isIgnoringBatteryOptimizations(packageName)) {
+            startActivity(android.content.Intent(android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                data = android.net.Uri.parse("package:$packageName")
+            })
+        }
+
         val hasSms = PermissionUtil.hasAll(this, arrayOf(android.Manifest.permission.RECEIVE_SMS))
         val hasSendSms = PermissionUtil.hasAll(this, arrayOf(android.Manifest.permission.SEND_SMS))
         val hasLocation = PermissionUtil.hasAll(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION))
