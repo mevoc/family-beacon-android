@@ -14,6 +14,7 @@ object PermissionUtil {
     const val REQ_BATTERY = 1002
     const val REQ_PANIC = 1003
     const val REQ_GEOFENCE = 1004
+    const val REQ_GEOFENCE_BG = 1005
 
     fun hasAll(context: Context, perms: Array<String>): Boolean =
         perms.all { ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED }
@@ -32,12 +33,13 @@ object PermissionUtil {
 
     val PERMS_PANIC = arrayOf<String>()
 
-    val PERMS_GEOFENCE = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        arrayOf(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_BACKGROUND_LOCATION
-        )
+    // Step 1: fine location only (background must be requested separately on Android 11+)
+    val PERMS_GEOFENCE = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
+
+    // Step 2: background location, requested alone after fine location is granted
+    val PERMS_GEOFENCE_BG = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
     } else {
-        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
+        arrayOf()
     }
 }

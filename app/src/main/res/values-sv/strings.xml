@@ -15,14 +15,14 @@
     <string name="feature_sms_location_desc">Svarar med position när ett godkänt nummer skickar \"POS\".</string>
 
     <string name="feature_battery">Batterivarning</string>
-    <string name="feature_battery_desc">Skickar ett SMS när batterinivån sjunker under ett tröskelvärde.</string>
+    <string name="feature_battery_desc">Skickar SMS till godkända nummer när batterinivån sjunker under ett tröskelvärde.</string>
     <string name="feature_battery_threshold">Larma under</string>
 
-    <string name="feature_panic">Nödlarm (PANIC)</string>
-    <string name="feature_panic_desc">Spelar ett högt ljud + vibration även i tyst läge (när aktiverat).</string>
+    <string name="feature_panic">Nödlarm</string>
+    <string name="feature_panic_desc">Spelar ett högt ljud + vibration även i tyst läge när godkänt nummer skickar \"PANIC\".</string>
 
     <string name="feature_geofence">Säkra zoner (geofence)</string>
-    <string name="feature_geofence_desc">Skickar ett SMS när en zon lämnas eller nås.</string>
+    <string name="feature_geofence_desc">Skickar SMS till godkända nummer när en zon lämnas eller nås.</string>
 
     <string name="btn_whitelist">Godkända nummer</string>
     <string name="btn_safe_zones">Säkra zoner</string>

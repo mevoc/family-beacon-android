@@ -134,11 +134,22 @@ class MainActivity : AppCompatActivity() {
         val desiredState = pendingDesiredState
         pendingToggleId = null
 
-        val granted = grantResults.isNotEmpty() && grantResults.all { it == android.content.pm.PackageManager.PERMISSION_GRANTED }
+        val granted = grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }
         val toggle = findViewById<Switch>(toggleId)
 
-        if (granted) {
-            // Apply state and log
+        // Geofence step 1: fine location granted → now ask for background location separately
+        if (requestCode == PermissionUtil.REQ_GEOFENCE && granted) {
+            val bgPerms = PermissionUtil.PERMS_GEOFENCE_BG
+            if (bgPerms.isNotEmpty() && !PermissionUtil.hasAll(this, bgPerms)) {
+                pendingToggleId = toggleId
+                pendingDesiredState = desiredState
+                PermissionUtil.request(this, bgPerms, PermissionUtil.REQ_GEOFENCE_BG)
+                return
+            }
+            // No background perm needed (pre-Q) — fall through to apply
+        }
+
+        if (granted || requestCode == PermissionUtil.REQ_GEOFENCE_BG && granted) {
             when (toggleId) {
                 R.id.switchSmsLocation -> {
                     prefs.smsLocationEnabled = desiredState
@@ -152,7 +163,6 @@ class MainActivity : AppCompatActivity() {
             }
             toggle.isChecked = desiredState
         } else {
-            // Permission denied → keep OFF
             when (toggleId) {
                 R.id.switchSmsLocation -> prefs.smsLocationEnabled = false
                 R.id.switchGeofence -> prefs.geofenceEnabled = false
