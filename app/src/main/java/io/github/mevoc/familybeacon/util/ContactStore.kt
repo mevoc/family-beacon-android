@@ -59,7 +59,12 @@ class ContactStore(context: Context) {
     fun allReceivingBattery() = getAll().filter { it.receiveBattery }
     fun allReceivingGeofence() = getAll().filter { it.receiveGeofence }
 
-    fun normalize(n: String): String = n.trim().replace(" ", "").replace("-", "")
+    fun normalize(n: String): String {
+        val stripped = n.trim().replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
+        // Strip leading +<country code> or leading 00<country code> so "5554" matches "+15554"
+        // Keep last 9 digits for comparison (covers most country/subscriber combos)
+        return if (stripped.length > 9) stripped.takeLast(9) else stripped
+    }
 
     companion object {
         private const val PREFS_FILE = "family_beacon_contacts"

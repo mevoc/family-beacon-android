@@ -106,11 +106,11 @@ class MainActivity : AppCompatActivity() {
         )
 
         btnWhitelist.setOnClickListener {
-            startActivity(Intent(this, WhitelistActivity::class.java))
+            auth.verifyUser { startActivity(Intent(this, WhitelistActivity::class.java)) }
         }
 
         findViewById<Button>(R.id.btnSafeZones).setOnClickListener {
-            startActivity(Intent(this, SafeZonesActivity::class.java))
+            auth.verifyUser { startActivity(Intent(this, SafeZonesActivity::class.java)) }
         }
 
         btnEvents.setOnClickListener {

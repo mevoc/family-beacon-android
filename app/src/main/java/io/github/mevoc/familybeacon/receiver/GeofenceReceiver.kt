@@ -45,7 +45,7 @@ class GeofenceReceiver : BroadcastReceiver() {
             return
         }
 
-        recipients.forEach { SmsUtil.send(it.number, msg) }
+        recipients.forEach { SmsUtil.send(context, it.number, msg) }
         EventLogger.warn(context, "GEOFENCE", "Alert sent ($label) to ${recipients.size} contact(s)")
     }
 }

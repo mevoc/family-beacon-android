@@ -28,10 +28,7 @@ class SmsReceiver : BroadcastReceiver() {
 
         val store = ContactStore(context)
         val contact = store.findByNumber(from)
-        if (contact == null) {
-            EventLogger.warn(context, "SMS", "Rejected SMS from non-whitelisted: $from")
-            return
-        }
+        if (contact == null) return
 
         when (body.uppercase(Locale.ROOT)) {
             "POS" -> when {
@@ -49,7 +46,7 @@ class SmsReceiver : BroadcastReceiver() {
                 !contact.canRequestPanic -> EventLogger.warn(context, "SMS", "PANIC STOP denied for ${contact.name} ($from)")
                 else -> handlePanicStop(context, from, contact.name)
             }
-            else -> EventLogger.info(context, "SMS", "Ignored command '$body' from ${contact.name} ($from)")
+            else -> { /* not a recognised command — ignore silently */ }
         }
     }
 
@@ -72,11 +69,11 @@ class SmsReceiver : BroadcastReceiver() {
                     append(maps)
                 }
 
-                SmsUtil.send(replyTo, msg)
+                SmsUtil.send(context, replyTo, msg)
                 EventLogger.info(context, "SMS", "Replied POS to $name ($source, $accTxt)")
             },
             onFailure = { reason ->
-                SmsUtil.send(replyTo, "⚠️ Could not get location ($reason).")
+                SmsUtil.send(context, replyTo, "⚠️ Could not get location ($reason).")
                 EventLogger.error(context, "SMS", "POS failed for $name: $reason")
             }
         )

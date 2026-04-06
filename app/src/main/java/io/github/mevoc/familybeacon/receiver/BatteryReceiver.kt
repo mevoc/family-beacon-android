@@ -42,7 +42,7 @@ class BatteryReceiver : BroadcastReceiver() {
             return
         }
 
-        recipients.forEach { SmsUtil.send(it.number, msg) }
+        recipients.forEach { SmsUtil.send(context, it.number, msg) }
         EventLogger.warn(context, "BATTERY", "Alert sent at $percent% (threshold $threshold%) to ${recipients.size} contact(s)")
     }
 }
