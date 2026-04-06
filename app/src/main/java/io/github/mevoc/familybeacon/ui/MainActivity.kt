@@ -86,6 +86,12 @@ class MainActivity : AppCompatActivity() {
         val versionName = packageManager.getPackageInfo(packageName, 0).versionName
         findViewById<TextView>(R.id.textVersion).text = versionName
 
+        // If SMS or Panic is enabled but RECEIVE_SMS was never granted, request it now
+        if ((prefs.smsLocationEnabled || prefs.panicEnabled) &&
+            !PermissionUtil.hasAll(this, arrayOf(android.Manifest.permission.RECEIVE_SMS))) {
+            PermissionUtil.request(this, arrayOf(android.Manifest.permission.RECEIVE_SMS), PermissionUtil.REQ_SMS_LOC)
+        }
+
         EventLogger.info(this, "APP", "Main screen opened")
 
         // Wire toggles with auth

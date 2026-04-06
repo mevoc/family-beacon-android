@@ -3,6 +3,8 @@ package io.github.mevoc.familybeacon.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.provider.Telephony
 import io.github.mevoc.familybeacon.data.EventLogger
 import io.github.mevoc.familybeacon.service.PanicService
@@ -10,9 +12,15 @@ import io.github.mevoc.familybeacon.util.ContactStore
 import io.github.mevoc.familybeacon.util.FeaturePrefs
 import io.github.mevoc.familybeacon.util.LocationUtil
 import io.github.mevoc.familybeacon.util.SmsUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.coroutines.resume
 
 class SmsReceiver : BroadcastReceiver() {
 
@@ -26,10 +34,21 @@ class SmsReceiver : BroadcastReceiver() {
         val from = msgs.first().originatingAddress ?: return
         val body = msgs.joinToString("") { it.messageBody ?: "" }.trim()
 
+        // goAsync() extends the receiver's lifetime so the coroutine (and EventLogger) can complete
+        val pending = goAsync()
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                process(context, from, body, prefs)
+            } finally {
+                pending.finish()
+            }
+        }
+    }
+
+    private suspend fun process(context: Context, from: String, body: String, prefs: FeaturePrefs) {
         val store = ContactStore(context)
         val contact = store.findByNumber(from)
         if (contact == null) {
-            // Only log if it looks like a command attempt, to avoid noise from normal SMS
             val cmd = body.uppercase(Locale.ROOT)
             if (cmd == "POS" || cmd.startsWith("PANIC")) {
                 EventLogger.warn(context, "SMS", "Command '$cmd' from unknown number: $from")
@@ -57,42 +76,52 @@ class SmsReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun handleLoc(context: Context, replyTo: String, name: String) {
+    // Suspend until location is obtained and reply SMS sent, so pending.finish() waits for it
+    private suspend fun handleLoc(context: Context, replyTo: String, name: String) {
         EventLogger.info(context, "SMS", "POS requested by $name ($replyTo)")
 
-        LocationUtil.requestBestEffortLocation(
-            context = context,
-            onResult = { lat, lon, acc, timeMs, source ->
-                val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
-                val time = sdf.format(Date(timeMs))
-                val accTxt = acc?.toInt()?.let { "±${it}m" } ?: "unknown"
-                val maps = "https://maps.google.com/?q=$lat,$lon"
-
-                val msg = buildString {
-                    append("📍 $lat,$lon\n")
-                    append("acc: $accTxt\n")
-                    append("time: $time\n")
-                    append("src: $source\n")
-                    append(maps)
-                }
-
-                SmsUtil.send(context, replyTo, msg)
-                EventLogger.info(context, "SMS", "Replied POS to $name ($source, $accTxt)")
-            },
-            onFailure = { reason ->
-                SmsUtil.send(context, replyTo, "⚠️ Could not get location ($reason).")
-                EventLogger.error(context, "SMS", "POS failed for $name: $reason")
+        suspendCancellableCoroutine<Unit> { cont ->
+            // FusedLocationClient needs to be called from a thread with a Looper
+            Handler(Looper.getMainLooper()).post {
+                LocationUtil.requestBestEffortLocation(
+                    context = context,
+                    onResult = { lat, lon, acc, timeMs, source ->
+                        val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
+                        val time = sdf.format(Date(timeMs))
+                        val accTxt = acc?.toInt()?.let { "±${it}m" } ?: "unknown"
+                        val maps = "https://maps.google.com/?q=$lat,$lon"
+                        val msg = buildString {
+                            append("📍 $lat,$lon\n")
+                            append("acc: $accTxt\n")
+                            append("time: $time\n")
+                            append("src: $source\n")
+                            append(maps)
+                        }
+                        SmsUtil.send(context, replyTo, msg)
+                        EventLogger.info(context, "SMS", "Replied POS to $name ($source, $accTxt)")
+                        if (cont.isActive) cont.resume(Unit)
+                    },
+                    onFailure = { reason ->
+                        SmsUtil.send(context, replyTo, "⚠️ Could not get location ($reason).")
+                        EventLogger.error(context, "SMS", "POS failed for $name: $reason")
+                        if (cont.isActive) cont.resume(Unit)
+                    }
+                )
             }
-        )
+        }
     }
 
-    private fun handlePanic(context: Context, from: String, name: String) {
+    private suspend fun handlePanic(context: Context, from: String, name: String) {
         EventLogger.warn(context, "PANIC", "PANIC triggered by $name ($from)")
-        context.startService(Intent(context, PanicService::class.java))
+        withContext(Dispatchers.Main) {
+            context.startService(Intent(context, PanicService::class.java))
+        }
     }
 
-    private fun handlePanicStop(context: Context, from: String, name: String) {
+    private suspend fun handlePanicStop(context: Context, from: String, name: String) {
         EventLogger.info(context, "PANIC", "PANIC STOP triggered by $name ($from)")
-        context.stopService(Intent(context, PanicService::class.java))
+        withContext(Dispatchers.Main) {
+            context.stopService(Intent(context, PanicService::class.java))
+        }
     }
 }
