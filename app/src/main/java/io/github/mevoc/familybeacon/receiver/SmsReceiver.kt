@@ -25,13 +25,26 @@ import kotlin.coroutines.resume
 class SmsReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
+        EventLogger.info(context, "SMS", "SmsReceiver fired (action=${intent.action})")
+
         val prefs = FeaturePrefs(context)
-        if (!prefs.smsLocationEnabled && !prefs.panicEnabled) return
+        if (!prefs.smsLocationEnabled && !prefs.panicEnabled) {
+            EventLogger.warn(context, "SMS", "Receiver: both features disabled, ignoring")
+            return
+        }
 
         val msgs = Telephony.Sms.Intents.getMessagesFromIntent(intent)
-        if (msgs.isEmpty()) return
+        if (msgs.isEmpty()) {
+            EventLogger.warn(context, "SMS", "Receiver: no messages in intent")
+            return
+        }
 
-        val from = msgs.first().originatingAddress ?: return
+        val from = msgs.first().originatingAddress
+        if (from == null) {
+            EventLogger.warn(context, "SMS", "Receiver: null originating address")
+            return
+        }
+
         val body = msgs.joinToString("") { it.messageBody ?: "" }.trim()
 
         // goAsync() extends the receiver's lifetime so the coroutine (and EventLogger) can complete

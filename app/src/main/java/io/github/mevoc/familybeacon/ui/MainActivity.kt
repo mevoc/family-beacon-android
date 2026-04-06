@@ -86,10 +86,17 @@ class MainActivity : AppCompatActivity() {
         val versionName = packageManager.getPackageInfo(packageName, 0).versionName
         findViewById<TextView>(R.id.textVersion).text = versionName
 
-        // If SMS or Panic is enabled but RECEIVE_SMS was never granted, request it now
-        if ((prefs.smsLocationEnabled || prefs.panicEnabled) &&
-            !PermissionUtil.hasAll(this, arrayOf(android.Manifest.permission.RECEIVE_SMS))) {
-            PermissionUtil.request(this, arrayOf(android.Manifest.permission.RECEIVE_SMS), PermissionUtil.REQ_SMS_LOC)
+        // Show warning and re-request if RECEIVE_SMS missing while SMS/Panic is enabled
+        val permWarning = findViewById<TextView>(R.id.textPermWarning)
+        val needsReceiveSms = prefs.smsLocationEnabled || prefs.panicEnabled
+        val hasReceiveSms = PermissionUtil.hasAll(this, arrayOf(android.Manifest.permission.RECEIVE_SMS))
+        if (needsReceiveSms && !hasReceiveSms) {
+            permWarning.visibility = android.view.View.VISIBLE
+            permWarning.setOnClickListener {
+                PermissionUtil.request(this, arrayOf(android.Manifest.permission.RECEIVE_SMS), PermissionUtil.REQ_SMS_LOC)
+            }
+        } else {
+            permWarning.visibility = android.view.View.GONE
         }
 
         EventLogger.info(this, "APP", "Main screen opened")
