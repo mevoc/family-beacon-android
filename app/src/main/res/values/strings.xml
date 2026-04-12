@@ -13,6 +13,7 @@
 
     <string name="feature_sms_location">SMS location request</string>
     <string name="feature_sms_location_desc">Reply with location when a whitelisted number sends \"POS\".</string>
+    <string name="feature_sms_rcs_note">⚠ Commands must arrive as regular SMS. If the sender uses RCS/chat messages, ask them to disable chat features in their messaging app.</string>
 
     <string name="feature_battery">Battery alert</string>
     <string name="feature_battery_desc">Send SMS to whitelisted numbers when battery level drops below a threshold.</string>
@@ -23,6 +24,14 @@
 
     <string name="feature_geofence">Safe zones (geofence)</string>
     <string name="feature_geofence_desc">Send SMS to whitelisted numbers when entering/leaving selected zones.</string>
+
+    <string name="send_cmd_title">Send SMS command</string>
+    <string name="send_cmd_desc">Send a command as regular SMS to a trusted contact (bypasses RCS).</string>
+    <string name="send_cmd_no_contacts">No contacts configured.</string>
+    <string name="send_cmd_pos">POS</string>
+    <string name="send_cmd_panic">PANIC</string>
+    <string name="send_cmd_panic_stop">PANIC STOP</string>
+    <string name="send_cmd_sent">Sent %1$s to %2$s</string>
 
     <string name="btn_whitelist">Whitelisted numbers</string>
     <string name="btn_safe_zones">Safe zones</string>

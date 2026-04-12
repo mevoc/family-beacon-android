@@ -5,10 +5,13 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
 import android.widget.Switch
 import android.widget.TextView
+import android.widget.Toast
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import io.github.mevoc.familybeacon.R
@@ -17,9 +20,11 @@ import io.github.mevoc.familybeacon.geofence.GeofenceHelper
 import io.github.mevoc.familybeacon.receiver.BatteryReceiver
 import io.github.mevoc.familybeacon.service.PanicService
 import io.github.mevoc.familybeacon.util.AuthHelper
+import io.github.mevoc.familybeacon.util.ContactStore
 import io.github.mevoc.familybeacon.util.FeaturePrefs
 import io.github.mevoc.familybeacon.util.PermissionUtil
 import io.github.mevoc.familybeacon.util.Prefs
+import io.github.mevoc.familybeacon.util.SmsUtil
 
 
 class MainActivity : AppCompatActivity() {
@@ -133,6 +138,30 @@ class MainActivity : AppCompatActivity() {
             getState = { prefs.geofenceEnabled },
             setState = { prefs.geofenceEnabled = it }
         )
+
+        // Send SMS command section
+        val contacts = ContactStore(this).getAll()
+        val spinner = findViewById<Spinner>(R.id.spinnerContact)
+        if (contacts.isEmpty()) {
+            spinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item,
+                listOf(getString(R.string.send_cmd_no_contacts)))
+        } else {
+            spinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item,
+                contacts.map { if (it.name.isNotEmpty()) "${it.name} (${it.number})" else it.number }
+            ).also { it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) }
+        }
+
+        fun sendCmd(cmd: String) {
+            if (contacts.isEmpty()) return
+            val contact = contacts[spinner.selectedItemPosition]
+            SmsUtil.send(this, contact.number, cmd)
+            EventLogger.info(this, "SMS", getString(R.string.send_cmd_sent, cmd, contact.name.ifEmpty { contact.number }))
+            Toast.makeText(this, getString(R.string.send_cmd_sent, cmd, contact.name.ifEmpty { contact.number }), Toast.LENGTH_SHORT).show()
+        }
+
+        findViewById<Button>(R.id.btnSendPos).setOnClickListener { sendCmd("POS") }
+        findViewById<Button>(R.id.btnSendPanic).setOnClickListener { sendCmd("PANIC") }
+        findViewById<Button>(R.id.btnSendPanicStop).setOnClickListener { sendCmd("PANIC STOP") }
 
         btnWhitelist.setOnClickListener {
             auth.verifyUser { startActivity(Intent(this, WhitelistActivity::class.java)) }

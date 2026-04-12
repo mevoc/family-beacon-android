@@ -13,6 +13,7 @@
 
     <string name="feature_sms_location">SMS-positionsförfrågan</string>
     <string name="feature_sms_location_desc">Svarar med position när ett godkänt nummer skickar \"POS\".</string>
+    <string name="feature_sms_rcs_note">⚠ Kommandon måste skickas som vanliga SMS. Om avsändaren använder RCS/chattmeddelanden, be dem stänga av chattfunktioner i sin meddelandeapp.</string>
 
     <string name="feature_battery">Batterivarning</string>
     <string name="feature_battery_desc">Skickar SMS till godkända nummer när batterinivån sjunker under ett tröskelvärde.</string>
@@ -23,6 +24,14 @@
 
     <string name="feature_geofence">Säkra zoner (geofence)</string>
     <string name="feature_geofence_desc">Skickar SMS till godkända nummer när en zon lämnas eller nås.</string>
+
+    <string name="send_cmd_title">Skicka SMS-kommando</string>
+    <string name="send_cmd_desc">Skicka ett kommando som vanligt SMS till en betrodd kontakt (kringgår RCS).</string>
+    <string name="send_cmd_no_contacts">Inga kontakter konfigurerade.</string>
+    <string name="send_cmd_pos">POS</string>
+    <string name="send_cmd_panic">PANIC</string>
+    <string name="send_cmd_panic_stop">PANIC STOP</string>
+    <string name="send_cmd_sent">Skickade %1$s till %2$s</string>
 
     <string name="btn_whitelist">Godkända nummer</string>
     <string name="btn_safe_zones">Säkra zoner</string>
