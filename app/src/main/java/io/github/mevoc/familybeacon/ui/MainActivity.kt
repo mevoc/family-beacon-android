@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
-import android.widget.Switch
+import com.google.android.material.materialswitch.MaterialSwitch as Switch
 import android.widget.TextView
 import android.widget.Toast
 import android.content.pm.PackageManager
@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.textVersion).text = versionName
 
         // Show warning and re-request if RECEIVE_SMS missing while SMS/Panic is enabled
-        val permWarning = findViewById<TextView>(R.id.textPermWarning)
+        val permWarning = findViewById<android.view.View>(R.id.textPermWarning)
         val needsReceiveSms = prefs.smsLocationEnabled || prefs.panicEnabled
         val hasReceiveSms = PermissionUtil.hasAll(this, arrayOf(android.Manifest.permission.RECEIVE_SMS))
         if (needsReceiveSms && !hasReceiveSms) {

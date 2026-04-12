@@ -1,221 +1,390 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface">
 
     <LinearLayout
         android:orientation="vertical"
-        android:padding="20dp"
+        android:padding="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <!-- Header -->
         <TextView
             android:text="@string/app_name"
-            android:textSize="22sp"
-            android:textStyle="bold"
+            android:textAppearance="?attr/textAppearanceHeadlineMedium"
+            android:layout_marginTop="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/textSubtitle"
             android:text="@string/main_subtitle"
-            android:layout_marginTop="6dp"
-            android:textSize="13sp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:id="@+id/textPermWarning"
-            android:visibility="gone"
-            android:text="⚠ SMS permission not granted — tap to fix"
-            android:textColor="#CC0000"
-            android:layout_marginTop="8dp"
-            android:textSize="13sp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <!-- SMS Location -->
-        <Switch
-            android:id="@+id/switchSmsLocation"
-            android:text="@string/feature_sms_location"
-            android:layout_marginTop="18dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:text="@string/feature_sms_location_desc"
-            android:textSize="13sp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:text="@string/feature_sms_rcs_note"
-            android:textSize="12sp"
-            android:layout_marginTop="4dp"
-            android:alpha="0.7"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <!-- Battery -->
-        <Switch
-            android:id="@+id/switchBattery"
-            android:text="@string/feature_battery"
-            android:layout_marginTop="12dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:text="@string/feature_battery_desc"
-            android:textSize="13sp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <LinearLayout
-            android:id="@+id/batteryThresholdRow"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="4dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:text="@string/feature_battery_threshold"
-                android:textSize="13sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <EditText
-                android:id="@+id/editBatteryThreshold"
-                android:inputType="number"
-                android:maxLength="2"
-                android:layout_marginStart="8dp"
-                android:layout_width="48dp"
-                android:layout_height="wrap_content"
-                android:textSize="13sp"
-                android:textAlignment="center"/>
-
-            <TextView
-                android:text="%"
-                android:textSize="13sp"
-                android:layout_marginStart="2dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-
-        <!-- Panic -->
-        <Switch
-            android:id="@+id/switchPanic"
-            android:text="@string/feature_panic"
-            android:layout_marginTop="12dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:text="@string/feature_panic_desc"
-            android:textSize="13sp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <!-- Geofence -->
-        <Switch
-            android:id="@+id/switchGeofence"
-            android:text="@string/feature_geofence"
-            android:layout_marginTop="12dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:text="@string/feature_geofence_desc"
-            android:textSize="13sp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <!-- Buttons -->
-        <Button
-            android:id="@+id/btnWhitelist"
-            android:text="@string/btn_whitelist"
-            android:layout_marginTop="18dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <Button
-            android:id="@+id/btnSafeZones"
-            android:text="@string/btn_safe_zones"
-            android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <Button
-            android:id="@+id/btnEvents"
-            android:text="@string/btn_events"
-            android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <Button
-            android:id="@+id/btnPanicStop"
-            android:text="@string/btn_panic_stop"
-            android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <!-- Send SMS command section -->
-        <TextView
-            android:text="@string/send_cmd_title"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:layout_marginTop="24dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:text="@string/send_cmd_desc"
-            android:textSize="13sp"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:alpha="0.6"
             android:layout_marginTop="2dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <Spinner
-            android:id="@+id/spinnerContact"
+        <!-- Permission warning -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/textPermWarning"
+            android:visibility="gone"
+            android:layout_marginTop="12dp"
+            app:cardBackgroundColor="#FFEDE0"
+            app:strokeColor="#FF6F00"
+            app:strokeWidth="1dp"
+            app:cardCornerRadius="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="⚠ SMS permission not granted — tap to fix"
+                android:textColor="#BF360C"
+                android:padding="12dp"
+                android:textSize="13sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Features card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="16dp"
+            app:strokeWidth="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- SMS Location -->
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:text="@string/feature_sms_location"
+                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                            <TextView
+                                android:text="@string/feature_sms_location_desc"
+                                android:textAppearance="?attr/textAppearanceBodySmall"
+                                android:alpha="0.7"
+                                android:layout_marginTop="2dp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                        </LinearLayout>
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/switchSmsLocation"
+                            android:layout_marginStart="12dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:text="@string/feature_sms_rcs_note"
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:alpha="0.6"
+                        android:layout_marginTop="6dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <!-- Battery -->
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:text="@string/feature_battery"
+                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                            <TextView
+                                android:text="@string/feature_battery_desc"
+                                android:textAppearance="?attr/textAppearanceBodySmall"
+                                android:alpha="0.7"
+                                android:layout_marginTop="2dp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                        </LinearLayout>
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/switchBattery"
+                            android:layout_marginStart="12dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/batteryThresholdRow"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="8dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:text="@string/feature_battery_threshold"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_marginStart="8dp"
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/editBatteryThreshold"
+                                android:inputType="number"
+                                android:maxLength="2"
+                                android:textAlignment="center"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView
+                            android:text="%"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:layout_marginStart="4dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <!-- Panic -->
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:text="@string/feature_panic"
+                            android:textAppearance="?attr/textAppearanceTitleMedium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                        <TextView
+                            android:text="@string/feature_panic_desc"
+                            android:textAppearance="?attr/textAppearanceBodySmall"
+                            android:alpha="0.7"
+                            android:layout_marginTop="2dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchPanic"
+                        android:layout_marginStart="12dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <!-- Geofence -->
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:text="@string/feature_geofence"
+                            android:textAppearance="?attr/textAppearanceTitleMedium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                        <TextView
+                            android:text="@string/feature_geofence_desc"
+                            android:textAppearance="?attr/textAppearanceBodySmall"
+                            android:alpha="0.7"
+                            android:layout_marginTop="2dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchGeofence"
+                        android:layout_marginStart="12dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Action buttons -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnWhitelist"
+            android:text="@string/btn_whitelist"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSafeZones"
+            android:text="@string/btn_safe_zones"
+            style="@style/Widget.Material3.Button.TonalButton"
             android:layout_marginTop="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_marginTop="6dp"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEvents"
+            android:text="@string/btn_events"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPanicStop"
+            android:text="@string/btn_panic_stop"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            app:strokeColor="?attr/colorError"
+            android:textColor="?attr/colorError"
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Send command card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="16dp"
+            app:strokeWidth="0dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/btnSendPos"
-                android:text="@string/send_cmd_pos"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"/>
+            <LinearLayout
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/btnSendPanic"
-                android:text="@string/send_cmd_panic"
-                android:layout_marginStart="6dp"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"/>
+                <TextView
+                    android:text="@string/send_cmd_title"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
-            <Button
-                android:id="@+id/btnSendPanicStop"
-                android:text="@string/send_cmd_panic_stop"
-                android:layout_marginStart="6dp"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"/>
+                <TextView
+                    android:text="@string/send_cmd_desc"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:alpha="0.7"
+                    android:layout_marginTop="2dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
-        </LinearLayout>
+                <Spinner
+                    android:id="@+id/spinnerContact"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSendPos"
+                        android:text="@string/send_cmd_pos"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSendPanic"
+                        android:text="@string/send_cmd_panic"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSendPanicStop"
+                        android:text="@string/send_cmd_panic_stop"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <TextView
             android:id="@+id/textVersion"
-            android:layout_marginTop="24dp"
-            android:textSize="11sp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:textAppearance="?attr/textAppearanceLabelSmall"
             android:alpha="0.4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

@@ -102,6 +102,7 @@ dependencies {
     
     implementation(libs.androidx.biometric)
     implementation(libs.androidx.appcompat)
+    implementation(libs.material)
     
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
