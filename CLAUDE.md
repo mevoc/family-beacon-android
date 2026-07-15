@@ -8,6 +8,12 @@ features** — so it still works when mobile data doesn't. Trusted contacts can 
 
 Repo: `github.com/mevoc/family-beacon-android` · MIT · sideload/APK distribution.
 
+> **⚠ Frozen — development moved to `../family-beacon`.** The SMS approach is a dead
+> end (RCS, Play Store SMS permission policy, no iOS path); the successor is a
+> self-hosted client/server monorepo. This repo stays as-is: a coherent SMS-based,
+> no-server implementation. **Don't evolve it toward the server architecture** —
+> port code *out* to the new repo instead (its CLAUDE.md lists what's worth taking).
+
 ---
 
 ## The ethical line — read this first

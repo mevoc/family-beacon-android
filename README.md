@@ -1,5 +1,12 @@
 # Family Beacon
 
+> **⚠ Development has moved.** The SMS-based approach hit platform dead ends (RCS,
+> Play Store SMS permission policy, no iOS path). Family Beacon continues as a
+> self-hosted client/server platform at
+> [`mevoc/family-beacon`](https://github.com/mevoc/family-beacon). This repo is kept
+> as the original SMS-based, no-server implementation and is no longer actively
+> developed.
+
 **Family Beacon** is an open-source Android app designed for families to share safety signals using SMS and local device features.
 
 The app allows trusted contacts (for example parents) to request status information such as location or battery level, even when mobile data is unavailable.
